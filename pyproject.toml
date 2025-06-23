@@ -10,8 +10,9 @@ readme = "README.md"
 authors = [
   { name = "İbrahim Topcu", email = "ibrahimtpc93@gmail.com" }
 ]
-license = { text = "MIT" }
+license = {text = "MIT"}
 requires-python = ">=3.8"
+
 dependencies = [
   "pytest"
 ]
@@ -24,24 +25,9 @@ docs = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/ibrahimtopcu/tree_height_analysis"
+"Homepage" = "https://github.com/ibrahimtopcu11/tree_height_analysis"
 "Documentation" = "https://tree-height-analysis.readthedocs.io"
 
 [tool.setuptools]
-package-dir = { "" = "src" }
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.bumpversion]
-current_version = "0.1.23"
-commit = true
-tag = true
-
-[bumpversion:file:pyproject.toml]
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[bumpversion:file:docs/source/conf.py]
-search = 'release = "{current_version}"'
-replace = 'release = "{new_version}"'
+package-dir = {"" = "src"}
+packages = ["tree_height_analysis_57"]
