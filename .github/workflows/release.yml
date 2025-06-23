@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: write
-  id-token: write  # Required for TestPyPI publishing
+  id-token: write
 
 jobs:
   release:
@@ -32,12 +32,9 @@ jobs:
         run: |
           pip install -U build twine bumpversion sphinx furo sphinx-autodoc-typehints pytest
 
-      - name: Install project
-        run: |
-          pip install -e .[docs]
-
       - name: Run tests
         run: |
+          pip install -e .[docs]
           pytest
 
       - name: Bump version
@@ -66,3 +63,11 @@ jobs:
         with:
           name: sphinx-docs
           path: docs/build/html
+
+      - name: Commit and push version + dist + docs
+        run: |
+          git add pyproject.toml src/tree_height_analysis_57/__init__.py docs/source/conf.py
+          git add dist/ || true
+          git add docs/build/html/ || true
+          git commit -m " Bump version and build dist/docs [skip ci]" || echo "Nothing to commit"
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
