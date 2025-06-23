@@ -2,10 +2,8 @@ name: Publish to TestPyPI
 
 on:
   push:
-    branches:
-      - main
     tags:
-      - "v*"
+      - "v*.*.*"  # Örn: v0.1.0, v1.2.3
 
 jobs:
   publish:
@@ -13,11 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.11
+          python-version: "3.11"
 
       - name: Install build tools
         run: |

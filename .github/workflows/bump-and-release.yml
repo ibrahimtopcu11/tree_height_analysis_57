@@ -1,0 +1,37 @@
+name: Bump version and tag
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/**"
+      - "pyproject.toml"
+
+jobs:
+  bump:
+    name: Bump version and create tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install bumpver
+        run: pip install bumpver
+
+      - name: Bump version
+        run: |
+          bumpver update --patch
+
+      - name: Push bumped tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git push --follow-tags
