@@ -1,17 +1,17 @@
-name: Release: Version Bump and Publish to TestPyPI
+name: Bump Version and Release to TestPyPI
 
 on:
   push:
     branches:
-      - master
       - main
+      - master
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +20,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Git with PAT
+      - name: Configure PAT for Git pushes
         run: |
           git remote set-url origin \
             https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
@@ -30,11 +30,11 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install build tools
+      - name: Install packaging tools
         run: |
           pip install build twine
 
-      - name: Bump version and build
+      - name: Bump version and build dist
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
