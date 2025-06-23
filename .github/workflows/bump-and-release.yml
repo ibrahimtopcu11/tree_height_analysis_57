@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   release:
+    if: "!startsWith(github.event.head_commit.message, 'Bump version:')"
     runs-on: ubuntu-latest
 
     steps:
