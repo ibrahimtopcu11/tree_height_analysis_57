@@ -1,4 +1,4 @@
-name: Bump version and tag
+name: Bump version and create tag
 
 on:
   push:
@@ -16,7 +16,8 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -26,9 +27,11 @@ jobs:
       - name: Install bumpversion
         run: pip install bumpversion
 
-      - name: Bump version and tag
+      - name: Bump patch version
+        run: bumpversion patch
+
+      - name: Push changes and tag
         run: |
-          bumpversion patch
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git push
