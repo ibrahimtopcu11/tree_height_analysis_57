@@ -3,7 +3,7 @@ name: Publish to TestPyPI
 on:
   push:
     tags:
-      - "v*.*.*"  # Örn: v0.1.0, v1.2.3
+      - "v*.*.*"
 
 jobs:
   publish:
@@ -24,12 +24,10 @@ jobs:
           pip install build twine
 
       - name: Build package
-        run: |
-          python -m build
+        run: python -m build
 
       - name: Publish to TestPyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TESTPYPI_API_TOKEN }}
-        run: |
-          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+        run: twine upload --repository-url https://test.pypi.org/legacy/ dist/*
