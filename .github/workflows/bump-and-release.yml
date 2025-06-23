@@ -3,7 +3,7 @@ name: Release: Bump & Publish to TestPyPI
 on:
   push:
     branches:
-      - master
+      - master  
     paths:
       - "pyproject.toml"
       - ".bumpversion.cfg"
@@ -11,14 +11,14 @@ on:
       - "src/**"
 
 jobs:
-  release:
+  bump-build-publish:
     if: "!startsWith(github.event.head_commit.message, 'ci: bump version to')"
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -26,30 +26,26 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Configure Git for CI
+      - name: Configure Git for pushing
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
-      - name: Install tools
-        run: |
-          pip install --upgrade pip
-          pip install bump2version build twine
+      - name: Install build dependencies
+        run: pip install bump2version build twine
 
-      - name: Bump version
+      - name: Bump version and commit
         run: bump2version patch
 
       - name: Build package
         run: python -m build
 
-      - name: Push tag and version bump
+      - name: Push tag and changes
         run: git push origin HEAD --follow-tags
 
       - name: Publish to TestPyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
-        run: |
-          twine upload --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
-
+        run: twine upload --repository-url https://test.pypi.org/legacy/ dist/*
