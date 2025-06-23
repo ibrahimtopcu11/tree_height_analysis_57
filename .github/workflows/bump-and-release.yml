@@ -3,13 +3,8 @@ name: Release: Bump & Publish to TestPyPI
 on:
   push:
     branches:
-      - master  
-    paths:
-      - "pyproject.toml"
-      - ".bumpversion.cfg"
-      - "docs/source/conf.py"
-      - "src/**"
-
+      - master
+  
 jobs:
   bump-build-publish:
     if: "!startsWith(github.event.head_commit.message, 'ci: bump version to')"
