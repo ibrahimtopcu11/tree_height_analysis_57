@@ -7,10 +7,11 @@ build:
 
 python:
   install:
-    - requirements: docs/source/requirements-docs.txt
+    - requirements: docs/requirements-docs.txt
     - method: pip
       path: .
 
 sphinx:
   configuration: docs/source/conf.py
   fail_on_warning: true
+
