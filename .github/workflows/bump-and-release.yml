@@ -1,46 +1,69 @@
-name: Release: Bump & Publish to TestPyPI
+name: Release: Version Bump and Publish to TestPyPI
 
 on:
   push:
     branches:
       - master
-  
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
-  bump-build-publish:
-    if: "!startsWith(github.event.head_commit.message, 'ci: bump version to')"
+  release:
+    if: >-
+      github.event_name == 'push' &&
+      !startsWith(github.event.head_commit.message, 'ci: bump version to')
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Git for push with PAT
+        run: |
+          git remote set-url origin \
+            https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
-      - name: Configure Git for pushing
+      - name: Install build dependencies
+        run: |
+          pip install build twine sphinx
+
+      - name: Bump version, build dist and docs
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
-      - name: Install build dependencies
-        run: pip install bump2version build twine
+          CURRENT=$(grep -E '^version = ' pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          PATCH=$((PATCH + 1))
+          NEW="${MAJOR}.${MINOR}.${PATCH}"
 
-      - name: Bump version and commit
-        run: bump2version patch
+          # Update version in pyproject.toml and conf.py
+          sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
+          sed -i "s|^version = .*|version = \"${NEW}\"|" docs/source/conf.py
+          sed -i "s|^release = .*|release = \"${NEW}\"|" docs/source/conf.py
 
-      - name: Build package
-        run: python -m build
+          # Clean & build
+          rm -rf dist/
+          python -m build --sdist --wheel
 
-      - name: Push tag and changes
-        run: git push origin HEAD --follow-tags
+          # Commit version bump + build
+          git add pyproject.toml docs/source/conf.py dist/
+          git commit -m "ci: bump version to ${NEW}"
+          git tag "v${NEW}"
+          git push origin HEAD --follow-tags
 
-      - name: Publish to TestPyPI
+      - name: Upload to TestPyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
-        run: twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+        run: |
+          twine upload --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
