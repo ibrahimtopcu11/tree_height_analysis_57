@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath('../../src'))
 project = 'Tree Height Analysis'
 author = 'Ibrahim Topcu'
 copyright = '2025, Ibrahim Topcu'
-release = "0.1.11"
+release = "0.1.12"
 
 # -- General configuration ------------------------------------------------
 extensions = [
