@@ -1,25 +1,51 @@
-name: Build docs and check links
+name: Build documentation and check links
 
 on:
+  push:
+    branches:
+      - master
+  pull_request:
   schedule:
-    - cron: '20 4 * * 1'  # Her pazartesi sabah
+    - cron: '20 4 * * 1'  # Her Pazartesi 04:20 UTC
   workflow_dispatch:
 
 jobs:
-  linkcheck:
+  build-docs:
+    name: Build HTML documentation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install sphinx
+      - name: Install documentation dependencies
         run: |
-          pip install sphinx
-          pip install -r docs/requirements.txt
+          pip install -r docs/requirements-docs.txt
 
-      - name: Run sphinx linkcheck
-        run: sphinx-build -b linkcheck docs/source docs/build/linkcheck
+      - name: Build HTML docs with Sphinx
+        run: |
+          sphinx-build -b html docs/source docs/build/html
+
+  check-links:
+    name: Check documentation links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install documentation dependencies
+        run: |
+          pip install -r docs/requirements-docs.txt
+
+      - name: Check for broken links
+        run: |
+          sphinx-build -b linkcheck docs/source docs/build/linkcheck
