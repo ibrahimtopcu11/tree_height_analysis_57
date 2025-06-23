@@ -1,0 +1,32 @@
+Metadata-Version: 2.4
+Name: tree_height_analysis
+Version: 0.1.23
+Summary: Analyze tree heights from tabular geographic data
+Author-email: İbrahim Topcu <ibrahimtpc93@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/ibrahimtopcu11/tree_height_analysis
+Project-URL: Documentation, https://tree-height-analysis.readthedocs.io
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pytest
+Provides-Extra: docs
+Requires-Dist: sphinx>=7.0; extra == "docs"
+Requires-Dist: furo; extra == "docs"
+Requires-Dist: sphinx-autodoc-typehints; extra == "docs"
+
+# Tree Height Analysis
+
+This Python package analyzes tree height data from `.txt` files and calculates:
+
+- The minimum and maximum tree heights
+- Tree types with extreme heights
+- Geodesic distance between them using Haversine formula
+
+## Example usage
+
+```python
+from tree_height_analysis.analyzer import parse_tree_data, analyze_tree_heights
+
+trees = parse_tree_data("sample_dataset/trees_complex.txt")
+results = analyze_tree_heights(trees)
+print(results)
