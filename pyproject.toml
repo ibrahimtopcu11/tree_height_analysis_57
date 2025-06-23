@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tree_height_analysis"
+version = "0.1.0"
+description = "Analyze tree heights from tabular geographic data"
+readme = "README.md"
+authors = [
+  { name="İbrahim Topcu", email="ibrahimtpc93@gmail.com" }
+]
+license = {text = "MIT"}
+requires-python = ">=3.8"
+dependencies = [
+  "pytest",
+  "sphinx"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/ibrahimtopcu/tree_height_analysis"
+"Documentation" = "https://your-docs-site.readthedocs.io"

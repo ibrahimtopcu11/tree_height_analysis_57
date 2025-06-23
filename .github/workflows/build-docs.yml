@@ -1,0 +1,25 @@
+name: Build docs and check links
+
+on:
+  schedule:
+    - cron: '20 4 * * 1'  # Her pazartesi sabah
+  workflow_dispatch:
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install sphinx
+        run: |
+          pip install sphinx
+          pip install -r docs/requirements.txt
+
+      - name: Run sphinx linkcheck
+        run: sphinx-build -b linkcheck docs/source docs/build/linkcheck
