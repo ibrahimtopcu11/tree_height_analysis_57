@@ -27,8 +27,7 @@ jobs:
         run: pip install bumpver
 
       - name: Bump version
-        run: |
-          bumpver update --patch
+        run: bumpver update --patch
 
       - name: Push bumped tag
         run: |
