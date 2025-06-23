@@ -4,34 +4,57 @@ on:
   push:
     branches:
       - master
-    paths:
-      - "src/**"
-      - "pyproject.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   bump:
-    name: Bump version and tag
+    name: Bump version, build dist & docs
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Git credentials
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install bumpversion
-        run: pip install bumpversion
-
-      - name: Bump version
+      - name: Install dependencies
         run: |
-          bumpversion patch
+          pip install build sphinx
 
-      - name: Push bumped tag
+      - name: Bump version and build
+        if: >-
+          github.event_name == 'push' &&
+          !startsWith(github.event.head_commit.message, 'ci: bump version to')
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git push --follow-tags
+
+          CURRENT=$(grep -E '^version = ' pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          PATCH=$((PATCH + 1))
+          NEW="${MAJOR}.${MINOR}.${PATCH}"
+
+          sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
+          sed -i "s|^release = .*|release = '${NEW}'|" docs/source/conf.py
+
+          rm -rf dist/*
+          python -m build
+
+          rm -rf docs/build/html
+          sphinx-build -b html docs/source docs/build/html
+
+          git add pyproject.toml docs/source/conf.py dist docs/build/html
+          git commit -m "ci: bump version to ${NEW}"
+          git tag "v${NEW}"
+          git push origin HEAD --follow-tags
