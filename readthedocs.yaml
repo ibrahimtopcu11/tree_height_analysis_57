@@ -10,9 +10,6 @@ python:
     - requirements: docs/source/requirements-docs.txt
     - method: pip
       path: .
-    - method: pip
-      extra_requirements:
-        - sphinx-autodoc-typehints
 
 sphinx:
   configuration: docs/source/conf.py
