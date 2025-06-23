@@ -13,10 +13,16 @@ authors = [
 license = {text = "MIT"}
 requires-python = ">=3.8"
 dependencies = [
-  "pytest",
-  "sphinx"
+  "pytest"
+]
+
+[project.optional-dependencies]
+docs = [
+  "sphinx>=7.0",
+  "furo",
+  "sphinx-autodoc-typehints"
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/ibrahimtopcu/tree_height_analysis"
-"Documentation" = "https://your-docs-site.readthedocs.io"
+"Documentation" = "https://tree-height-analysis.readthedocs.io"
