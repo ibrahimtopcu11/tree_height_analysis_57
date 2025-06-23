@@ -1,4 +1,4 @@
-name: Release: Version Bump and Publish to TestPyPI
+name: Release: Bump version and publish to TestPyPI
 
 on:
   push:
@@ -21,8 +21,9 @@ jobs:
 
       - name: Set up Git with PAT
         run: |
-          git remote set-url origin \
-            https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -35,30 +36,30 @@ jobs:
 
       - name: Bump version, build dist and docs
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
+          # Version bump
           CURRENT=$(grep -E '^version = ' pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
           PATCH=$((PATCH + 1))
           NEW="${MAJOR}.${MINOR}.${PATCH}"
 
-          # Update version in pyproject.toml and conf.py
+          # Update files
           sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
           sed -i "s|^version = .*|version = \"${NEW}\"|" docs/source/conf.py
           sed -i "s|^release = .*|release = \"${NEW}\"|" docs/source/conf.py
 
-          # Clean & build
+          # Clean and build
           rm -rf dist/
           python -m build --sdist --wheel
+          rm -rf docs/build/html
+          sphinx-build -b html docs/source docs/build/html
 
-          # Commit version bump + build
-          git add pyproject.toml docs/source/conf.py dist/
+          # Commit and tag
+          git add pyproject.toml docs/source/conf.py dist/ docs/build/html
           git commit -m "ci: bump version to ${NEW}"
           git tag "v${NEW}"
           git push origin HEAD --follow-tags
 
-      - name: Upload to TestPyPI
+      - name: Publish to TestPyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
