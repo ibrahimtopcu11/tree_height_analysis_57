@@ -1,9 +1,8 @@
-name: Release and Publish to TestPyPI
+name: Release
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
   workflow_dispatch:
 
 permissions:
@@ -16,13 +15,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: false
 
-      - name: Configure PAT for push
+      - name: Set up Git identity
         run: |
-          git remote set-url origin \
-            https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Authenticate with PAT
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -31,29 +32,23 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install build twine sphinx furo sphinx-autodoc-typehints pytest
-
-      - name: Install package
-        run: pip install .
+          pip install --upgrade build twine bumpversion sphinx furo sphinx-autodoc-typehints pytest
 
       - name: Run tests
-        run: pytest
-
-      - name: Bump version, build dist & docs
-        if: >
-          github.event_name == 'push' &&
-          !startsWith(github.event.head_commit.message, 'ci: bump version to')
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          pip install -e .[docs]
+          pytest
 
-          # Get current version
+      - name: Bump version and update files
+        run: |
           CURRENT=$(grep -E '^version = ' pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
           PATCH=$((PATCH + 1))
           NEW="${MAJOR}.${MINOR}.${PATCH}"
 
-          # Update versions
+          echo "Bumping version to $NEW"
+
+          # Update files
           sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
           sed -i "s/^__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
           sed -i "s/^version = \".*\"/version = \"${NEW}\"/" docs/source/conf.py
@@ -64,27 +59,17 @@ jobs:
           python -m build
 
           # Build docs
+          rm -rf docs/build/html
           sphinx-build -b html docs/source docs/build/html
 
-          # Commit changes
-          git add pyproject.toml src/tree_height_analysis_57/__init__.py docs/source/conf.py dist docs/build/html
+          git add pyproject.toml src/tree_height_analysis_57/__init__.py docs/source/conf.py dist/ docs/build/html/
           git commit -m "ci: bump version to ${NEW}"
           git tag "v${NEW}"
           git push origin HEAD --follow-tags
 
-      - name: Clean previous dist
-        run: rm -rf dist/*
-
-      - name: Rebuild dist
-        run: python -m build
-
       - name: Publish to TestPyPI
-        if: >
-          github.event_name == 'push' &&
-          !startsWith(github.event.head_commit.message, 'ci: bump version to')
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
         run: |
-          twine upload --non-interactive \
-            --repository-url https://test.pypi.org/legacy/ dist/*
+          twine upload --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
