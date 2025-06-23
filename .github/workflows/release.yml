@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: write
-  id-token: write
+  id-token: write  # PyPI Trusted Publishing için gerekli
 
 jobs:
   release:
@@ -25,18 +25,23 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -U build twine bumpversion sphinx furo sphinx-autodoc-typehints
+          pip install -U build twine bumpversion sphinx furo sphinx-autodoc-typehints pytest
 
       - name: Run tests
         run: |
           pip install -e .[docs]
           pytest
 
+      - name: Configure Git user
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+
       - name: Bump version
         run: |
           bumpversion patch --allow-dirty
 
-      - name: Build dist/
+      - name: Build distribution
         run: |
           rm -rf dist/
           python -m build
@@ -45,7 +50,11 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
 
-      - name: Build docs
+      - name: Build Sphinx docs
         run: |
-          sphinx-build -b html docs/source docs/build
+          sphinx-build -b html docs/source docs/build/html
