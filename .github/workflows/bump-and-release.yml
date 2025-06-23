@@ -30,15 +30,21 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-
-      - name: Set PAT token for push
-        run: |
           git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
-      - name: Install bumpversion
-        run: pip install bump2version
+      - name: Install tools
+        run: |
+          pip install --upgrade pip
+          pip install bump2version build
 
-      - name: Bump version and push tag
+      - name: Bump version and create tag
         run: |
           bump2version patch
+
+      - name: Build dist files
+        run: |
+          python -m build
+
+      - name: Push changes and tags
+        run: |
           git push origin HEAD --follow-tags
