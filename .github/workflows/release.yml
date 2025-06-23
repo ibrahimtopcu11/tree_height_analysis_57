@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: write
-  id-token: write  
+  id-token: write 
 
 jobs:
   release:
@@ -17,6 +17,11 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Set up Git identity
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -32,16 +37,11 @@ jobs:
           pip install -e .[docs]
           pytest
 
-      - name: Configure Git user
-        run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
-
       - name: Bump version
         run: |
           bumpversion patch --allow-dirty
 
-      - name: Build distribution
+      - name: Build dist/
         run: |
           rm -rf dist/
           python -m build
@@ -50,11 +50,16 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
-          skip-existing: true
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
 
-      - name: Build Sphinx docs
+      - name: Build Sphinx documentation
         run: |
           sphinx-build -b html docs/source docs/build/html
+
+      - name: Upload HTML docs as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sphinx-docs
+          path: docs/build/html
