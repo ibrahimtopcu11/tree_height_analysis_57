@@ -7,11 +7,11 @@ on:
 
 jobs:
   publish:
-    name: Build and publish to TestPyPI
+    name: Build and Publish to TestPyPI
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -19,15 +19,14 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install build tools
+      - name: Install tools
         run: pip install build twine
 
-      - name: Build package
+      - name: Build
         run: python -m build
 
-      - name: Publish to TestPyPI
+      - name: Publish
         env:
           TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
-        run: |
-          twine upload --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
+          TWINE_PASSWORD: ${{ secrets.TESTPYPI_API_TOKEN }}
+        run: twine upload --repository-url https://test.pypi.org/legacy/ dist/*

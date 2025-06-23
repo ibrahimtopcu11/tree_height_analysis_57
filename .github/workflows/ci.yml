@@ -14,8 +14,7 @@ jobs:
         python-version: ["3.11"]
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -31,5 +30,5 @@ jobs:
       - name: Run tests
         run: pytest tests/
 
-      - name: Check documentation build
+      - name: Check docs
         run: sphinx-build -b html docs/source docs/build/html
