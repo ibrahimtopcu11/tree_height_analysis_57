@@ -11,10 +11,8 @@ permissions:
 jobs:
   bump:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -32,5 +30,4 @@ jobs:
       - name: Bump patch version, commit & tag
         run: |
           bump2version patch
-          # bump2version; pyproject.toml & conf.py güncellenir, commit edilir, vX.Y.Z tag oluşturulur
           git push origin HEAD --follow-tags
