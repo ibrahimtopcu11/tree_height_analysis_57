@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tree_height_analysis_57"
-version = "0.1.24"        
+version = "0.1.25"
 description = "Analyze tree heights from tabular geographic data"
 readme = "README.md"
-authors = [{ name="İbrahim Topcu", email="ibrahimtpc93@gmail.com" }]
+authors = [{ name = "İbrahim Topcu", email = "ibrahimtpc93@gmail.com" }]
 license = { text = "MIT" }
 requires-python = ">=3.8"
 

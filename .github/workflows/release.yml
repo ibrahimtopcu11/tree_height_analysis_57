@@ -1,4 +1,4 @@
-name: Release
+name: Release and Publish to TestPyPI
 
 on:
   push:
@@ -8,20 +8,21 @@ on:
 
 permissions:
   contents: write
-  id-token: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-      - name: Set up Git identity
+      - name: Configure PAT for push
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+          git remote set-url origin \
+            https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -30,44 +31,60 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -U build twine bumpversion sphinx furo sphinx-autodoc-typehints pytest
+          pip install build twine sphinx furo sphinx-autodoc-typehints pytest
+
+      - name: Install package
+        run: pip install .
 
       - name: Run tests
-        run: |
-          pip install -e .[docs]
-          pytest
+        run: pytest
 
-      - name: Bump version
+      - name: Bump version, build dist & docs
+        if: >
+          github.event_name == 'push' &&
+          !startsWith(github.event.head_commit.message, 'ci: bump version to')
         run: |
-          bumpversion patch --allow-dirty
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
-      - name: Build dist/
-        run: |
+          # Get current version
+          CURRENT=$(grep -E '^version = ' pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          PATCH=$((PATCH + 1))
+          NEW="${MAJOR}.${MINOR}.${PATCH}"
+
+          # Update versions
+          sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
+          sed -i "s/^__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
+          sed -i "s/^version = \".*\"/version = \"${NEW}\"/" docs/source/conf.py
+          sed -i "s/^release = \".*\"/release = \"${NEW}\"/" docs/source/conf.py
+
+          # Build dist
           rm -rf dist/
           python -m build
 
+          # Build docs
+          sphinx-build -b html docs/source docs/build/html
+
+          # Commit changes
+          git add pyproject.toml src/tree_height_analysis_57/__init__.py docs/source/conf.py dist docs/build/html
+          git commit -m "ci: bump version to ${NEW}"
+          git tag "v${NEW}"
+          git push origin HEAD --follow-tags
+
+      - name: Clean previous dist
+        run: rm -rf dist/*
+
+      - name: Rebuild dist
+        run: python -m build
+
       - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
+        if: >
+          github.event_name == 'push' &&
+          !startsWith(github.event.head_commit.message, 'ci: bump version to')
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
-
-      - name: Build Sphinx documentation
         run: |
-          sphinx-build -b html docs/source docs/build/html
-
-      - name: Upload HTML docs as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sphinx-docs
-          path: docs/build/html
-
-      - name: Commit and push version + dist + docs
-        run: |
-          git add pyproject.toml src/tree_height_analysis_57/__init__.py docs/source/conf.py
-          git add dist/ || true
-          git add docs/build/html/ || true
-          git commit -m " Bump version and build dist/docs [skip ci]" || echo "Nothing to commit"
-          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+          twine upload --non-interactive \
+            --repository-url https://test.pypi.org/legacy/ dist/*
