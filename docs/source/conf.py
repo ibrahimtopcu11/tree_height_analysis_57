@@ -12,8 +12,10 @@ project = 'Tree Height Analysis'
 author = 'Ibrahim Topcu'
 copyright = '2025, Ibrahim Topcu'
 
-version = "0.1.23"
-release = "0.1.23"
+# Bu satır __version__ değişkeninden otomatik versiyonu alır
+from tree_height_analysis_57 import __version__
+version = __version__
+release = __version__
 
 # -- General configuration ------------------------------------------------
 extensions = [
