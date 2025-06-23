@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tree_height_analysis"
-version = "0.1.9"
+version = "0.1.10"
 description = "Analyze tree heights from tabular geographic data"
 readme = "README.md"
 authors = [
