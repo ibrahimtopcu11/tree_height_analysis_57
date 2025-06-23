@@ -1,4 +1,4 @@
-name: Release: Bump version and publish to TestPyPI
+name: Release: Version Bump and Publish to TestPyPI
 
 on:
   push:
@@ -19,11 +19,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Git with PAT
+      - name: Configure Git for pushes
         run: |
-          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -32,34 +32,41 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install --upgrade pip
           pip install build twine sphinx
+
+      - name: Print current version
+        run: |
+          grep -E '^version = ' pyproject.toml || echo "version not found"
 
       - name: Bump version, build dist and docs
         run: |
-          # Version bump
           CURRENT=$(grep -E '^version = ' pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
+          echo "Current version: $CURRENT"
+
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
           PATCH=$((PATCH + 1))
           NEW="${MAJOR}.${MINOR}.${PATCH}"
+          echo "New version: $NEW"
 
-          # Update files
+          # Update versions
           sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
           sed -i "s|^version = .*|version = \"${NEW}\"|" docs/source/conf.py
           sed -i "s|^release = .*|release = \"${NEW}\"|" docs/source/conf.py
 
-          # Clean and build
-          rm -rf dist/
-          python -m build --sdist --wheel
-          rm -rf docs/build/html
-          sphinx-build -b html docs/source docs/build/html
-
-          # Commit and tag
-          git add pyproject.toml docs/source/conf.py dist/ docs/build/html
+          # Commit version bump and tag
+          git add pyproject.toml docs/source/conf.py
           git commit -m "ci: bump version to ${NEW}"
           git tag "v${NEW}"
           git push origin HEAD --follow-tags
 
-      - name: Publish to TestPyPI
+      - name: Build distributions
+        run: |
+          rm -rf dist/
+          python -m build
+          ls -l dist
+
+      - name: Upload to TestPyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
