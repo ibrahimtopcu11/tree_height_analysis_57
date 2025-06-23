@@ -23,14 +23,13 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install bumpver
-        run: pip install bumpver
+      - name: Install bumpversion
+        run: pip install bumpversion
 
-      - name: Bump version
-        run: bumpver update --patch
-
-      - name: Push bumped tag
+      - name: Bump version and tag
         run: |
+          bumpversion patch
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git push --follow-tags
+          git push
+          git push --tags
