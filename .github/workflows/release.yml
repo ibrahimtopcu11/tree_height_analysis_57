@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: write
-  id-token: write 
+  id-token: write  # Required for TestPyPI publishing
 
 jobs:
   release:
@@ -32,9 +32,12 @@ jobs:
         run: |
           pip install -U build twine bumpversion sphinx furo sphinx-autodoc-typehints pytest
 
-      - name: Run tests
+      - name: Install project
         run: |
           pip install -e .[docs]
+
+      - name: Run tests
+        run: |
           pytest
 
       - name: Bump version
