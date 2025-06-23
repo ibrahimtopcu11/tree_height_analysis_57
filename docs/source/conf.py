@@ -13,7 +13,7 @@ author = 'Ibrahim Topcu'
 copyright = '2025, Ibrahim Topcu'
 
 version = "0.1.23"
-release = "0.1.23"
+release = "0.1.24"
 
 # -- General configuration ------------------------------------------------
 extensions = [
