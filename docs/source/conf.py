@@ -12,15 +12,14 @@ project = 'Tree Height Analysis'
 author = 'Ibrahim Topcu'
 copyright = '2025, Ibrahim Topcu'
 
-
-version = '0.1.23'
-release = '0.1.23'
+version = "0.1.23"
+release = "0.1.23"
 
 # -- General configuration ------------------------------------------------
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx_autodoc_typehints',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx_autodoc_typehints",
 ]
 
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
