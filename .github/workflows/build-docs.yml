@@ -2,11 +2,10 @@ name: Build documentation and check links
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
   pull_request:
   schedule:
-    - cron: '20 4 * * 1'  # Her Pazartesi 04:20 UTC
+    - cron: '20 4 * * 1'  # Her Pazartesi 07:20 Türkiye saati
   workflow_dispatch:
 
 jobs:
@@ -22,13 +21,14 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install documentation dependencies
+      - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r docs/requirements-docs.txt
+          pip install .
 
       - name: Build HTML docs with Sphinx
-        run: |
-          sphinx-build -b html docs/source docs/build/html
+        run: sphinx-build -b html docs/source docs/build/html
 
   check-links:
     name: Check documentation links
@@ -42,10 +42,11 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install documentation dependencies
+      - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r docs/requirements-docs.txt
+          pip install .
 
       - name: Check for broken links
-        run: |
-          sphinx-build -b linkcheck docs/source docs/build/linkcheck
+        run: sphinx-build -b linkcheck docs/source docs/build/linkcheck
