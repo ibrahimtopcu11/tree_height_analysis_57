@@ -1,11 +1,9 @@
-name: Release Auto Bump & Publish to TestPyPI
+name: Release and publish to TestPyPI
 
 on:
   push:
     branches:
       - master
-      - main
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,39 +13,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Git with PAT
+        run: |
+          git remote set-url origin \
+            https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install build tools
-        run: |
-          pip install build twine
+      - name: Install tools
+        run: pip install bumpversion build twine
 
-      - name: Bump version and build dist
+      - name: Bump version
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          CURRENT=$(grep -E '^version = ' pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
-          PATCH=$((PATCH + 1))
-          NEW="${MAJOR}.${MINOR}.${PATCH}"
-
-          sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
-
-          python -m build
-
-          git add pyproject.toml dist/
-          git commit -m "ci: bump version to ${NEW}"
+          bumpversion patch
           git push origin HEAD
+
+      - name: Build dist
+        run: |
+          rm -rf dist/
+          python -m build --sdist --wheel
 
       - name: Upload to TestPyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
         run: |
-          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+          twine upload --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
