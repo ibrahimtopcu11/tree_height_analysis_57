@@ -1,4 +1,4 @@
-name: Bump version and publish to TestPyPI
+name: Release and Publish to TestPyPI
 
 on:
   push:
@@ -8,11 +8,9 @@ on:
 
 permissions:
   contents: write
-  id-token: write  
 
 jobs:
-  bump-and-publish:
-    if: "!startsWith(github.event.head_commit.message, 'ci: bump version to')"
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,19 +24,19 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade build bumpver
+          pip install bumpver build twine
 
-      - name: Bump version
+      - name: Bump version (patch)
         run: |
-          bumpver update --patch --no-commit --no-tag
+          bumpver update --patch --no-tag-commit
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add pyproject.toml docs/source/conf.py
+          git add pyproject.toml docs/source/conf.py .bumpver.toml
           VERSION=$(bumpver show | grep current | awk '{print $2}')
           git commit -m "ci: bump version to ${VERSION}"
           git push
 
-      - name: Build dist
+      - name: Build distribution
         run: |
           rm -rf dist/
           python -m build
