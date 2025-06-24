@@ -11,31 +11,24 @@ permissions:
 
 jobs:
   tick-job:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set Git Config
-        run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
-
-      - name: ✅ Add GitHub Status Check (with PAT)
+      - name: ✅ Set GitHub Status Check using PAT
         env:
           SHA: ${{ github.event.workflow_run.head_sha }}
           REPO: ${{ github.repository }}
           PAT: ${{ secrets.PAT_TOKEN }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           curl -X POST \
+            -H "Authorization: Bearer $PAT" \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: token $PAT" \
             https://api.github.com/repos/$REPO/statuses/$SHA \
-            -d '{
-              "state": "success",
-              "context": "✅ Final Status",
-              "description": "All tests passed and CI is complete.",
-              "target_url": "https://github.com/'"$REPO"'/actions/runs/'"${{ github.event.workflow_run.id }}"'"
-            }'
+            -d "$(jq -n \
+              --arg state "success" \
+              --arg context "✅ Final Status" \
+              --arg description "All tests passed and CI is complete." \
+              --arg target_url "https://github.com/$REPO/actions/runs/$RUN_ID" \
+              '{state: $state, context: $context, description: $description, target_url: $target_url}')"
