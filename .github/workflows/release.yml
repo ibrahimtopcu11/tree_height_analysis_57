@@ -3,6 +3,8 @@ name: Release
 on:
   push:
     branches: [master]
+    paths-ignore:
+      - '**[skip release]**'
 
 permissions:
   contents: write
@@ -51,7 +53,7 @@ jobs:
       - name: Commit version bump and tag
         run: |
           git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
+          git config --global user.name "GitHub Actions"
           git add src/tree_height_analysis_57/__init__.py docs/source/conf.py
           git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}"
           git tag "v${{ steps.bump.outputs.new_version }}"
@@ -72,3 +74,11 @@ jobs:
       - name: Build docs
         run: |
           sphinx-build -b html docs/source docs/build/html
+
+      - name: Trigger CI for bump commit
+        run: |
+          echo "Triggering CI with safe commit..."
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git commit --allow-empty -m "ci: trigger CI for version bump [skip release]"
+          git push
