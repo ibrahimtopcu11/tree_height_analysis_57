@@ -32,7 +32,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install --upgrade build twine bumpversion sphinx furo sphinx-autodoc-typehints pytest
+          pip install --upgrade build twine sphinx furo sphinx-autodoc-typehints pytest
 
       - name: Run tests
         run: |
@@ -45,20 +45,16 @@ jobs:
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
           PATCH=$((PATCH + 1))
           NEW="${MAJOR}.${MINOR}.${PATCH}"
-
           echo "Bumping version to $NEW"
 
-          # Update files
           sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
           sed -i "s/^__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
           sed -i "s/^version = \".*\"/version = \"${NEW}\"/" docs/source/conf.py
           sed -i "s/^release = \".*\"/release = \"${NEW}\"/" docs/source/conf.py
 
-          # Build dist
           rm -rf dist/
           python -m build
 
-          # Build docs
           rm -rf docs/build/html
           sphinx-build -b html docs/source docs/build/html
 
@@ -67,9 +63,14 @@ jobs:
           git tag "v${NEW}"
           git push origin HEAD --follow-tags
 
+      - name: Check built files (debug)
+        run: |
+          ls -R dist/
+          ls -R docs/build/html/
+
       - name: Publish to TestPyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
         run: |
-          twine upload --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
+          twine upload --non-interactive --verbose --repository-url https://test.pypi.org/legacy/ dist/*

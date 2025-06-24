@@ -3,13 +3,15 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 
-#  Allow versioned build artifacts
+# Allow versioned build artifacts
 !dist/
+!dist/**
 !docs/build/
+!docs/build/**
 !docs/build/html/
+!docs/build/html/**
 
 # Sphinx
-# (we only ignore temporary internal files, not HTML outputs)
 docs/_build/
 
 # VSCode
