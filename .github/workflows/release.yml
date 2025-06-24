@@ -42,34 +42,36 @@ jobs:
       - name: Bump version automatically
         id: bump
         run: |
-          CURRENT=$(grep -E '^version = "' pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
+          CURRENT=$(grep -oP 'version\s*=\s*"\K[0-9]+\.[0-9]+\.[0-9]+' pyproject.toml)
 
-          if [[ ! $CURRENT =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo " Invalid CURRENT version: $CURRENT"
+          if [[ -z "$CURRENT" ]]; then
+            echo "Invalid CURRENT version: '$CURRENT'"
+            cat pyproject.toml
             exit 1
           fi
 
           MAJOR=$(echo "$CURRENT" | cut -d. -f1)
           MINOR=$(echo "$CURRENT" | cut -d. -f2)
           PATCH=$(echo "$CURRENT" | cut -d. -f3)
-
           NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
+
           echo "🔧 Bumping version: $CURRENT → $NEW"
 
-          sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
-          sed -i "s/^__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
-          sed -i "s/^version = \".*\"/version = \"${NEW}\"/" docs/source/conf.py
-          sed -i "s/^release = \".*\"/release = \"${NEW}\"/" docs/source/conf.py
+          sed -i "s/version = \".*\"/version = \"${NEW}\"/" pyproject.toml
+          sed -i "s/__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
+          sed -i "s/version = \".*\"/version = \"${NEW}\"/" docs/source/conf.py
+          sed -i "s/release = \".*\"/release = \"${NEW}\"/" docs/source/conf.py
 
           echo "new_version=${NEW}" >> $GITHUB_OUTPUT
 
-      - name: Build distribution
+      - name: Build dist
         run: |
           rm -rf dist/
           python -m build
 
-      - name: Build documentation
+      - name: Build docs
         run: |
+          rm -rf docs/build/html
           sphinx-build -b html docs/source docs/build/html
 
       - name: Commit and push version bump
