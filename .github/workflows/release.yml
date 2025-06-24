@@ -30,7 +30,7 @@ jobs:
           pip install -e .[docs]
           pytest
 
-      - name: Bump version (__init__.py + .bumpversion.cfg)
+      - name: Bump version (__init__.py + conf.py)
         id: bump
         run: |
           CURRENT=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
