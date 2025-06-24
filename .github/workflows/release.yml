@@ -7,39 +7,54 @@ on:
 
 permissions:
   contents: write
-  id-token: write  
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Git
+      - name: Set up Git identity
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+
+      - name: Authenticate with PAT
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install build tools
+      - name: Install dependencies
         run: |
-          pip install --upgrade build sphinx furo sphinx-autodoc-typehints
+          pip install --upgrade build twine sphinx furo sphinx-autodoc-typehints pytest
+
+      - name: Run tests
+        run: |
+          pip install -e .[docs]
+          pytest
 
       - name: Bump version automatically
         id: bump
         run: |
           CURRENT=$(grep -E '^version = "' pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
-          PATCH=$((PATCH + 1))
-          NEW="${MAJOR}.${MINOR}.${PATCH}"
 
-          echo "Bumping version to $NEW"
+          if [[ ! $CURRENT =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo " Invalid CURRENT version: $CURRENT"
+            exit 1
+          fi
+
+          MAJOR=$(echo "$CURRENT" | cut -d. -f1)
+          MINOR=$(echo "$CURRENT" | cut -d. -f2)
+          PATCH=$(echo "$CURRENT" | cut -d. -f3)
+
+          NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          echo "🔧 Bumping version: $CURRENT → $NEW"
 
           sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
           sed -i "s/^__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
@@ -59,12 +74,14 @@ jobs:
 
       - name: Commit and push version bump
         run: |
-          git add pyproject.toml src/tree_height_analysis_57/__init__.py docs/source/conf.py
+          git add pyproject.toml src/tree_height_analysis_57/__init__.py docs/source/conf.py dist/ docs/build/html/
           git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}"
           git tag "v${{ steps.bump.outputs.new_version }}"
           git push origin HEAD --follow-tags
 
-      - name: Publish to TestPyPI using Trusted Publisher
+      - name: Publish to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
