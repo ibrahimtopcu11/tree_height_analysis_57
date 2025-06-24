@@ -1,31 +1,12 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
-
-# C extensions
-*.so
+*.pyo
 
 # Distribution / packaging
-.Python
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
 *.egg-info/
-.installed.cfg
-*.egg
-
-# PyInstaller
-*.manifest
-*.spec
 
 # Installer logs
 pip-log.txt
@@ -33,14 +14,11 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
+.coverage
 .tox/
 .nox/
-.coverage
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
+.cache/
+.pytest_cache/
 
 # mypy
 .mypy_cache/
@@ -50,20 +28,20 @@ docs/_build/
 docs/build/
 docs/build/html/
 
-# Pyre type checker
-.pyre/
-
 # Environments
-.env
-.venv
+.venv/
 env/
-venv/
 ENV/
-env.bak/
-venv.bak/
+venv/
+.env
+.env.*
 
-# VS Code
+# IDEs
 .vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
 
-# Mac
+# OS
 .DS_Store
+Thumbs.db
