@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade build twine sphinx furo sphinx-autodoc-typehints pytest
+
+      - name: Run tests
+        run: |
+          pip install -e .[docs]
+          pytest
+
+      - name: Bump version automatically
+        id: bump
+        run: |
+          CURRENT=$(grep -oP 'version\s*=\s*"\K[0-9]+\.[0-9]+\.[0-9]+' pyproject.toml)
+          MAJOR=$(echo "$CURRENT" | cut -d. -f1)
+          MINOR=$(echo "$CURRENT" | cut -d. -f2)
+          PATCH=$(echo "$CURRENT" | cut -d. -f3)
+          NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          echo "🔧 Bumping version: $CURRENT → $NEW"
+
+          sed -i "s/version = \".*\"/version = \"${NEW}\"/" pyproject.toml
+          sed -i "s/__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
+          sed -i "s/version = \".*\"/version = \"${NEW}\"/" docs/source/conf.py
+          sed -i "s/release = \".*\"/release = \"${NEW}\"/" docs/source/conf.py
+
+          echo "new_version=${NEW}" >> $GITHUB_OUTPUT
+
+      - name: Commit version bump and tag
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git add pyproject.toml src/tree_height_analysis_57/__init__.py docs/source/conf.py
+          git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}"
+          git tag "v${{ steps.bump.outputs.new_version }}"
+          git push origin HEAD --follow-tags
+
+      - name: Build dist
+        run: |
+          rm -rf dist/
+          python -m build
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_TOKEN }}
+          repository-url: https://test.pypi.org/legacy/
+
+      - name: Build docs
+        run: |
+          sphinx-build -b html docs/source docs/build/html
