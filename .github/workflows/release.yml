@@ -33,17 +33,18 @@ jobs:
       - name: Bump version automatically
         id: bump
         run: |
-          CURRENT=$(grep -oP 'version\s*=\s*"\K[0-9]+\.[0-9]+\.[0-9]+' pyproject.toml)
+          CURRENT=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \\\"(.*?)\\\"', f).group(1))")
+          echo "Current version: $CURRENT"
+
           MAJOR=$(echo "$CURRENT" | cut -d. -f1)
           MINOR=$(echo "$CURRENT" | cut -d. -f2)
           PATCH=$(echo "$CURRENT" | cut -d. -f3)
           NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
-          echo "🔧 Bumping version: $CURRENT → $NEW"
+          echo "New version: $NEW"
 
-          sed -i "s/version = \".*\"/version = \"${NEW}\"/" pyproject.toml
-          sed -i "s/__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
-          sed -i "s/version = \".*\"/version = \"${NEW}\"/" docs/source/conf.py
-          sed -i "s/release = \".*\"/release = \"${NEW}\"/" docs/source/conf.py
+          sed -i "s/__version__ = \\".*\\"/__version__ = \\"${NEW}\\"/" src/tree_height_analysis_57/__init__.py
+          sed -i "s/version = \\".*\\"/version = \\"${NEW}\\"/" docs/source/conf.py
+          sed -i "s/release = \\".*\\"/release = \\"${NEW}\\"/" docs/source/conf.py
 
           echo "new_version=${NEW}" >> $GITHUB_OUTPUT
 
@@ -51,7 +52,7 @@ jobs:
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
-          git add pyproject.toml src/tree_height_analysis_57/__init__.py docs/source/conf.py
+          git add src/tree_height_analysis_57/__init__.py docs/source/conf.py
           git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}"
           git tag "v${{ steps.bump.outputs.new_version }}"
           git push origin HEAD --follow-tags
