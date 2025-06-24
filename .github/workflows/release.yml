@@ -33,7 +33,7 @@ jobs:
       - name: Bump version automatically
         id: bump
         run: |
-          CURRENT=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \\\"(.*?)\\\"', f).group(1))")
+          CURRENT=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
           echo "Current version: $CURRENT"
 
           MAJOR=$(echo "$CURRENT" | cut -d. -f1)
@@ -42,9 +42,9 @@ jobs:
           NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
           echo "New version: $NEW"
 
-          sed -i "s/__version__ = \\".*\\"/__version__ = \\"${NEW}\\"/" src/tree_height_analysis_57/__init__.py
-          sed -i "s/version = \\".*\\"/version = \\"${NEW}\\"/" docs/source/conf.py
-          sed -i "s/release = \\".*\\"/release = \\"${NEW}\\"/" docs/source/conf.py
+          sed -i "s/__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
+          sed -i "s/version = \".*\"/version = \"${NEW}\"/" docs/source/conf.py
+          sed -i "s/release = \".*\"/release = \"${NEW}\"/" docs/source/conf.py
 
           echo "new_version=${NEW}" >> $GITHUB_OUTPUT
 
