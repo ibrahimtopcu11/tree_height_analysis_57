@@ -73,29 +73,27 @@ jobs:
           sudo apt update
           sudo apt install gh -y
 
-      - name: Authenticate GitHub CLI
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          echo "$GH_TOKEN" | gh auth login --with-token
-
       - name: Trigger build-docs workflow
         if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           gh workflow run build-docs.yml
 
       - name: Trigger release workflow
         if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           gh workflow run release.yml
 
-      - name:  Set GitHub Check as Passed (add green tick)
+      - name: Set GitHub Check as Passed (add green tick)
         if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest' && success()
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
             -f state=success \
             -f context="✅ Final Status" \
             -f description="All workflows completed successfully." \
             -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
