@@ -78,14 +78,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          gh workflow run build-docs.yml
+          gh workflow run "Build documentation and check links"
 
       - name: Trigger release workflow
         if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          gh workflow run release.yml
+          gh workflow run "Release"
 
       - name: Set GitHub Check as Passed (add green tick)
         if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest' && success()
