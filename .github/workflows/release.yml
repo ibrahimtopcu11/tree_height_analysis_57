@@ -23,42 +23,30 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install --upgrade build twine sphinx furo sphinx-autodoc-typehints pytest bump2version
+          pip install --upgrade build twine sphinx furo sphinx-autodoc-typehints bumpversion pytest
 
       - name: Run tests
         run: |
           pip install -e .[docs]
           pytest
 
-      - name: Bump version automatically
+      - name: Bump version (__init__.py + .bumpversion.cfg)
         id: bump
         run: |
           CURRENT=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
           echo "Current version: $CURRENT"
-
-          MAJOR=$(echo "$CURRENT" | cut -d. -f1)
-          MINOR=$(echo "$CURRENT" | cut -d. -f2)
-          PATCH=$(echo "$CURRENT" | cut -d. -f3)
-          NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          bumpversion patch --allow-dirty
+          NEW=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
           echo "New version: $NEW"
-
-          # Update all version strings
-          sed -i "s/__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
-          sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
-          sed -i "s/version = \".*\"/version = \"${NEW}\"/" docs/source/conf.py
-          sed -i "s/release = \".*\"/release = \"${NEW}\"/" docs/source/conf.py
-          sed -i "s/^current_version = .*/current_version = ${NEW}/" .bumpversion.cfg
-
           echo "new_version=${NEW}" >> $GITHUB_OUTPUT
 
-      - name: Commit version bump and tag
+      - name: Commit version bump
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
-          git add src/tree_height_analysis_57/__init__.py pyproject.toml docs/source/conf.py .bumpversion.cfg
-          git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}"
-          git tag "v${{ steps.bump.outputs.new_version }}"
-          git push origin HEAD --follow-tags
+          git add .
+          git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No version changes to commit"
+          git push origin HEAD
 
       - name: Build dist
         run: |
@@ -72,6 +60,14 @@ jobs:
           password: ${{ secrets.TEST_PYPI_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
 
-      - name: Build documentation
+      - name: Build Sphinx HTML docs
         run: |
           sphinx-build -b html docs/source docs/build/html
+
+      - name: Commit dist/ and docs/
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git add dist/ docs/build/html/
+          git commit -m "ci: add built dist and docs for ${{ steps.bump.outputs.new_version }}" || echo "No dist/docs changes to commit"
+          git push origin HEAD
