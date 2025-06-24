@@ -4,12 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tree_height_analysis_57"
-version = "0.1.25"
 description = "Analyze tree heights from tabular geographic data"
 readme = "README.md"
 authors = [{ name = "İbrahim Topcu", email = "ibrahimtpc93@gmail.com" }]
-license = { text = "MIT" }
+license = "MIT"
 requires-python = ">=3.8"
+
+dynamic = ["version"]
 
 dependencies = ["pytest"]
 
@@ -27,3 +28,6 @@ Documentation = "https://tree-height-tree_height_analysis_57.readthedocs.io"
 [tool.setuptools]
 package-dir = {"" = "src"}
 packages    = ["tree_height_analysis_57"]
+
+[tool.setuptools.dynamic]
+version = {attr = "tree_height_analysis_57.__version__"}
