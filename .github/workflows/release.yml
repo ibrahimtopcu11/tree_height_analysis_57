@@ -2,9 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [master]
-    paths-ignore:
-      - '**[skip release]**'
+    branches: [mster]
 
 permissions:
   contents: write
@@ -12,6 +10,8 @@ permissions:
 
 jobs:
   release:
+   
+    if: "!contains(github.event.head_commit.message, '[skip release]')"
     runs-on: ubuntu-latest
 
     steps:
@@ -75,7 +75,7 @@ jobs:
         run: |
           sphinx-build -b html docs/source docs/build/html
 
-      - name: Trigger CI for bump commit
+      - name: Trigger CI for bump commit (green check)
         run: |
           echo "Triggering CI with safe commit..."
           git config --global user.email "github-actions@github.com"
