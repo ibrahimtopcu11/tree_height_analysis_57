@@ -1,14 +1,11 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *.pyo
 
 # Distribution / packaging
 build/
-dist/
 *.egg-info/
-*.egg
-*.whl
 
 # Installer logs
 pip-log.txt
@@ -16,70 +13,32 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
+.coverage
 .tox/
 .nox/
-.coverage
 .cache/
 .pytest_cache/
-coverage.xml
-*.cover
-.hypothesis/
 
 # mypy
 .mypy_cache/
-.dmypy.json
-dmypy.json
 
-# Pyre type checker
-.pyre/
-
-# Pyright
-pyrightconfig.json
-
-# Sphinx documentation
+# Sphinx (dist ve build hariç)
 docs/_build/
-docs/build/
-docs/build/html/
 
 # Environments
 .venv/
 env/
 ENV/
 venv/
-.venv.bak/
 .env
 .env.*
 
-# IDEs and editors
+# IDEs
 .vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
-*.code-workspace
 
-# Mac OS / Windows / Linux system files
+# OS
 .DS_Store
 Thumbs.db
-ehthumbs.db
-Icon?
-desktop.ini
-
-# Jupyter Notebook Checkpoints
-.ipynb_checkpoints/
-
-# Logs
-*.log
-
-# SQLite database
-*.sqlite3
-*.db
-
-# VS Code profiling
-.profile/
-*.pyproj
-
-# Temporary files
-*.bak
-*.swp
-*.tmp
-*.orig

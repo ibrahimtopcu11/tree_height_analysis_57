@@ -69,6 +69,6 @@ jobs:
 
       - name: Commit dist/ and docs/
         run: |
-          git add dist/ docs/build/html/
+          git add -f dist/ docs/build/html/
           git commit -m "ci: add built dist and docs for ${{ steps.bump.outputs.new_version }}" || echo "No dist/docs changes to commit"
           git push origin HEAD
