@@ -9,41 +9,31 @@ on:
 
 jobs:
   docs:
-    name: Build HTML docs and check links
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: Install doc dependencies
         run: |
           pip install -r docs/requirements-docs.txt
           pip install .
-
       - name: Build HTML docs
         run: sphinx-build -b html docs/source docs/build/html
-
   linkcheck:
-    name: Check documentation links
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: Install doc dependencies
         run: |
           pip install -r docs/requirements-docs.txt
           pip install .
-
       - name: Check links
         run: sphinx-build -b linkcheck docs/source docs/build/linkcheck
