@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   release:
-    if: "!contains(github.event.head_commit.message, '[skip release]')"  # 🔁 sonsuz döngüye karşı
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install --upgrade build twine sphinx furo sphinx-autodoc-typehints pytest
+          pip install --upgrade build twine sphinx furo sphinx-autodoc-typehints pytest bump2version
 
       - name: Run tests
         run: |
@@ -43,17 +42,20 @@ jobs:
           NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
           echo "New version: $NEW"
 
+          # Update all version strings
           sed -i "s/__version__ = \".*\"/__version__ = \"${NEW}\"/" src/tree_height_analysis_57/__init__.py
+          sed -i "s/^version = \".*\"/version = \"${NEW}\"/" pyproject.toml
           sed -i "s/version = \".*\"/version = \"${NEW}\"/" docs/source/conf.py
           sed -i "s/release = \".*\"/release = \"${NEW}\"/" docs/source/conf.py
+          sed -i "s/^current_version = .*/current_version = ${NEW}/" .bumpversion.cfg
 
           echo "new_version=${NEW}" >> $GITHUB_OUTPUT
 
       - name: Commit version bump and tag
         run: |
           git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add src/tree_height_analysis_57/__init__.py docs/source/conf.py
+          git config --global user.name "github-actions"
+          git add src/tree_height_analysis_57/__init__.py pyproject.toml docs/source/conf.py .bumpversion.cfg
           git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}"
           git tag "v${{ steps.bump.outputs.new_version }}"
           git push origin HEAD --follow-tags
@@ -70,14 +72,6 @@ jobs:
           password: ${{ secrets.TEST_PYPI_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
 
-      - name: Build docs
+      - name: Build documentation
         run: |
           sphinx-build -b html docs/source docs/build/html
-
-      - name: Trigger CI for bump commit (green check)
-        run: |
-          echo "Triggering CI for green tick..."
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git commit --allow-empty -m "ci: trigger CI for version bump [skip release]"
-          git push
