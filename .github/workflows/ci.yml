@@ -67,33 +67,3 @@ jobs:
           file: ./coverage.xml
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Install GitHub CLI
-        run: |
-          sudo apt update
-          sudo apt install gh -y
-
-      - name: Trigger build-docs workflow
-        if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          gh workflow run "Build documentation and check links"
-
-      - name: Trigger release workflow
-        if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          gh workflow run "Release"
-
-      - name: Set GitHub Check as Passed (add green tick)
-        if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest' && success()
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
-            -f state=success \
-            -f context="✅ Final Status" \
-            -f description="All workflows completed successfully." \
-            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

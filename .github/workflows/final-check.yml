@@ -1,15 +1,26 @@
-name: Final Check
+name: ✅ Final Check Tick
 
 on:
   workflow_run:
-    workflows: ["CI", "Build documentation and check links", "Release"]
+    workflows: ["CI"]
     types:
       - completed
 
 jobs:
-  final_check:
+  mark-success:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+
     steps:
-      - name: All required workflows succeeded 
-        run: echo "CI, Build documentation and check links, and Release workflows all passed!"
+      - name: Add ✅ status check using PAT
+        run: |
+          curl -s -X POST \
+            -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+            -d '{
+              "state": "success",
+              "context": "✅ Final Status",
+              "description": "All workflows completed successfully.",
+              "target_url": "https://github.com/'"${{ github.repository }}"'/actions/runs/'"${{ github.event.workflow_run.id }}"'"
+            }'
