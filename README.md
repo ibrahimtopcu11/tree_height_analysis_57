@@ -4,7 +4,7 @@ This Python package analyzes tree height data from `.txt` files and calculates:
 
 - The minimum and maximum tree heights
 - Tree types with extreme heights
-- Geodesic distance between them using Haversine formula
+- Geodesic distance between them using Haversine formula.
 
 ## Example usage
 
