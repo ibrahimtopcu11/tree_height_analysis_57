@@ -1,0 +1,15 @@
+name: Final Check
+
+on:
+  workflow_run:
+    workflows: ["CI", "Build documentation and check links", "Release"]
+    types:
+      - completed
+
+jobs:
+  final_check:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: All required workflows succeeded 
+        run: echo "CI, Build documentation and check links, and Release workflows all passed!"
