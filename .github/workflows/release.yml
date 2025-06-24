@@ -30,7 +30,12 @@ jobs:
           pip install -e .[docs]
           pytest
 
-      - name: Bump version (__init__.py + conf.py)
+      - name: Configure Git identity
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+
+      - name: Bump version (__init__.py only)
         id: bump
         run: |
           CURRENT=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
@@ -42,8 +47,6 @@ jobs:
 
       - name: Commit version bump
         run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
           git add .
           git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No version changes to commit"
           git push origin HEAD
@@ -66,8 +69,6 @@ jobs:
 
       - name: Commit dist/ and docs/
         run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
           git add dist/ docs/build/html/
           git commit -m "ci: add built dist and docs for ${{ steps.bump.outputs.new_version }}" || echo "No dist/docs changes to commit"
           git push origin HEAD
