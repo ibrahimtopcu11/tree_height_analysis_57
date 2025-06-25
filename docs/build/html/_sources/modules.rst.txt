@@ -1,12 +1,7 @@
-Modules
-=======
+tree_height_analysis_57
+=======================
 
-.. automodule:: tree_height_analysis_57.analyzer
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: tree_height_analysis_57.distancefunction
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   tree_height_analysis_57

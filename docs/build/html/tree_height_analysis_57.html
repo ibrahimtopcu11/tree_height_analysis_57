@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="tree_height_analysis_57 package" href="tree_height_analysis_57.html" /><link rel="prev" title="Usage" href="usage.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="tree_height_analysis_57" href="modules.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>tree_height_analysis_57 - Tree Height Analysis 0.1.44 documentation</title>
+        <title>tree_height_analysis_57 package - Tree Height Analysis 0.1.44 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -201,8 +201,8 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">tree_height_analysis_57</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of tree_height_analysis_57</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="tree_height_analysis_57.html">tree_height_analysis_57 package</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">tree_height_analysis_57</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of tree_height_analysis_57</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">tree_height_analysis_57 package</a></li>
 </ul>
 </li>
 </ul>
@@ -225,7 +225,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="_sources/modules.rst.txt" title="View this page">
+  <a class="muted-link" href="_sources/tree_height_analysis_57.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -239,35 +239,154 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="tree-height-analysis-57">
-<h1>tree_height_analysis_57<a class="headerlink" href="#tree-height-analysis-57" title="Link to this heading">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tree_height_analysis_57.html">tree_height_analysis_57 package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tree_height_analysis_57.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tree_height_analysis_57.html#module-tree_height_analysis_57.analyzer">tree_height_analysis_57.analyzer module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tree_height_analysis_57.html#tree_height_analysis_57.analyzer.analyze_tree_heights"><code class="docutils literal notranslate"><span class="pre">analyze_tree_heights()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="tree_height_analysis_57.html#tree_height_analysis_57.analyzer.parse_tree_data"><code class="docutils literal notranslate"><span class="pre">parse_tree_data()</span></code></a></li>
+          <section id="module-tree_height_analysis_57">
+<span id="tree-height-analysis-57-package"></span><h1>tree_height_analysis_57 package<a class="headerlink" href="#module-tree_height_analysis_57" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-tree_height_analysis_57.analyzer">
+<span id="tree-height-analysis-57-analyzer-module"></span><h2>tree_height_analysis_57.analyzer module<a class="headerlink" href="#module-tree_height_analysis_57.analyzer" title="Link to this heading">¶</a></h2>
+<p>Module: analyzer</p>
+<p>This module provides core functions to read and analyze tree height data
+from a tab-separated text file. It includes functionality to:</p>
+<ul class="simple">
+<li><p>Parse a dataset containing tree ID, coordinates, type, and height</p></li>
+<li><p>Identify trees with minimum and maximum height</p></li>
+<li><p>Compute the geographical distance between them using the Haversine formula</p></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="tree_height_analysis_57.html#module-tree_height_analysis_57.avarage_tree_height">tree_height_analysis_57.avarage_tree_height module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tree_height_analysis_57.html#tree_height_analysis_57.avarage_tree_height.average_tree_height"><code class="docutils literal notranslate"><span class="pre">average_tree_height()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="tree_height_analysis_57.html#module-tree_height_analysis_57.distancefunction">tree_height_analysis_57.distancefunction module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tree_height_analysis_57.html#tree_height_analysis_57.distancefunction.distance_lat_long"><code class="docutils literal notranslate"><span class="pre">distance_lat_long()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<dl class="py function">
+<dt class="sig sig-object py" id="tree_height_analysis_57.analyzer.analyze_tree_heights">
+<span class="sig-prename descclassname"><span class="pre">tree_height_analysis_57.analyzer.</span></span><span class="sig-name descname"><span class="pre">analyze_tree_heights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trees</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tree_height_analysis_57.analyzer.analyze_tree_heights" title="Link to this definition">¶</a></dt>
+<dd><p>Analyze the tree dataset to find the minimum and maximum height trees,
+along with their types, coordinates, and the distance between them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>trees</strong> (<em>dict</em>) – Parsed tree data dictionary as returned by <cite>parse_tree_data</cite>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><em>dict</em> –</p>
+<dl>
+<dt>A dictionary with the structure:</dt><dd><dl>
+<dt>{</dt><dd><dl class="simple">
+<dt>“min”: {</dt><dd><p>“id”: str,
+“type”: str,
+“height”: float,
+“lat”: float,
+“lon”: float</p>
+</dd>
+</dl>
+<p>},
+“max”: {</p>
+<blockquote>
+<div><p>”id”: str,
+“type”: str,
+“height”: float,
+“lat”: float,
+“lon”: float</p>
+</div></blockquote>
+<p>},
+“distance”: float  # in kilometers</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tree_height_analysis_57.analyzer.parse_tree_data">
+<span class="sig-prename descclassname"><span class="pre">tree_height_analysis_57.analyzer.</span></span><span class="sig-name descname"><span class="pre">parse_tree_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tree_height_analysis_57.analyzer.parse_tree_data" title="Link to this definition">¶</a></dt>
+<dd><p>Parse tree data from a tab-separated text file.</p>
+<p>Each row in the file is expected to contain:
+ID, Latitude, Longitude, Tree Type, and Height.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – Path to the input .txt dataset file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><em>dict</em> –</p>
+<dl>
+<dt>A dictionary with the following structure:</dt><dd><dl class="simple">
+<dt>{</dt><dd><p>“id”: {tree_id: str, …},
+“lat”: {tree_id: float, …},
+“lon”: {tree_id: float, …},
+“type”: {tree_id: str, …},
+“height”: {tree_id: float, …}</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tree_height_analysis_57.avarage_tree_height">
+<span id="tree-height-analysis-57-avarage-tree-height-module"></span><h2>tree_height_analysis_57.avarage_tree_height module<a class="headerlink" href="#module-tree_height_analysis_57.avarage_tree_height" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tree_height_analysis_57.avarage_tree_height.average_tree_height">
+<span class="sig-prename descclassname"><span class="pre">tree_height_analysis_57.avarage_tree_height.</span></span><span class="sig-name descname"><span class="pre">average_tree_height</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trees</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tree_height_analysis_57.avarage_tree_height.average_tree_height" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the average height of all trees in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>trees</strong> (<em>dict</em>) – A dictionary returned by <cite>parse_tree_data</cite> that contains tree heights under the “height” key.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>float</em> – The average tree height in meters.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trees</span> <span class="o">=</span> <span class="n">parse_tree_data</span><span class="p">(</span><span class="s2">&quot;sample_dataset/trees_complex.txt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">avg</span> <span class="o">=</span> <span class="n">average_tree_height</span><span class="p">(</span><span class="n">trees</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">avg</span><span class="p">)</span>
+<span class="go">12.53</span>
+</pre></div>
 </div>
+</dd></dl>
+
+</section>
+<section id="module-tree_height_analysis_57.distancefunction">
+<span id="tree-height-analysis-57-distancefunction-module"></span><h2>tree_height_analysis_57.distancefunction module<a class="headerlink" href="#module-tree_height_analysis_57.distancefunction" title="Link to this heading">¶</a></h2>
+<p>Module: distancefunction</p>
+<p>Provides a geographic distance calculation function based on the Haversine formula.</p>
+<p>This function allows you to compute the great-circle distance between two points
+on the Earth, given their latitude and longitude in decimal degrees.</p>
+<p>The Earth’s mean radius is assumed to be 6371 kilometers.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tree_height_analysis_57.distancefunction.distance_lat_long">
+<span class="sig-prename descclassname"><span class="pre">tree_height_analysis_57.distancefunction.</span></span><span class="sig-name descname"><span class="pre">distance_lat_long</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tree_height_analysis_57.distancefunction.distance_lat_long" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the distance between two geographic coordinates using
+the Haversine formula.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat1</strong> (<em>float</em>) – Latitude of the first point in decimal degrees.</p></li>
+<li><p><strong>lon1</strong> (<em>float</em>) – Longitude of the first point in decimal degrees.</p></li>
+<li><p><strong>lat2</strong> (<em>float</em>) – Latitude of the second point in decimal degrees.</p></li>
+<li><p><strong>lon2</strong> (<em>float</em>) – Longitude of the second point in decimal degrees.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>float</em> – Distance in kilometers between the two points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
         </article>
@@ -275,23 +394,15 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="tree_height_analysis_57.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">tree_height_analysis_57 package</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="usage.html">
+          
+          <a class="prev-page" href="modules.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Usage</div>
+                <div class="title">tree_height_analysis_57</div>
                 
               </div>
             </a>
@@ -313,8 +424,40 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">tree_height_analysis_57 package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-tree_height_analysis_57.analyzer">tree_height_analysis_57.analyzer module</a><ul>
+<li><a class="reference internal" href="#tree_height_analysis_57.analyzer.analyze_tree_heights"><code class="docutils literal notranslate"><span class="pre">analyze_tree_heights()</span></code></a></li>
+<li><a class="reference internal" href="#tree_height_analysis_57.analyzer.parse_tree_data"><code class="docutils literal notranslate"><span class="pre">parse_tree_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-tree_height_analysis_57.avarage_tree_height">tree_height_analysis_57.avarage_tree_height module</a><ul>
+<li><a class="reference internal" href="#tree_height_analysis_57.avarage_tree_height.average_tree_height"><code class="docutils literal notranslate"><span class="pre">average_tree_height()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-tree_height_analysis_57.distancefunction">tree_height_analysis_57.distancefunction module</a><ul>
+<li><a class="reference internal" href="#tree_height_analysis_57.distancefunction.distance_lat_long"><code class="docutils literal notranslate"><span class="pre">distance_lat_long()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
