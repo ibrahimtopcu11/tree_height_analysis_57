@@ -34,7 +34,7 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
 
-      - name: Bump version (__init__.py only)
+      - name: Bump version (init + bumpversion.cfg + pyproject.toml)
         id: bump
         run: |
           CURRENT=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
@@ -45,7 +45,7 @@ jobs:
 
       - name: Commit version bump
         run: |
-          git add .
+          git add pyproject.toml .bumpversion.cfg src/tree_height_analysis_57/__init__.py
           git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No version changes to commit"
           git push origin HEAD
 
@@ -59,7 +59,7 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
         run: |
-          set -e  # Eğer bir hata olursa tüm job'u durdur
+          set -e  # Hata varsa workflow'u durdur
           twine check dist/*
           twine upload --non-interactive --disable-progress-bar \
             --repository-url https://test.pypi.org/legacy/ dist/*
