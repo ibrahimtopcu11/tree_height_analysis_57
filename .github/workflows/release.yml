@@ -45,10 +45,14 @@ jobs:
           echo "New version: $NEW"
           echo "new_version=${NEW}" >> $GITHUB_OUTPUT
 
-      - name: Commit version bump
+      - name: Regenerate API Docs (.rst files)
         run: |
-          git add .
-          git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No version changes to commit"
+          sphinx-apidoc -o docs/source/ src/tree_height_analysis_57 --force --module-first
+
+      - name: Commit regenerated docs
+        run: |
+          git add docs/source/*.rst
+          git commit -m "ci: regenerate API docs for ${{ steps.bump.outputs.new_version }}" || echo "No .rst changes to commit"
           git push origin HEAD
 
       - name: Build dist
@@ -67,10 +71,10 @@ jobs:
         run: |
           sphinx-build -b html docs/source docs/build/html
 
-      - name: Commit dist/ and docs/
+      - name: Commit dist/ and HTML docs
         run: |
           git add -f dist/ docs/build/html/
-          git commit -m "ci: add built dist and docs for ${{ steps.bump.outputs.new_version }}" || echo "No dist/docs changes to commit"
+          git commit -m "ci: add built dist and docs for ${{ steps.bump.outputs.new_version }}" || echo "No built files to commit"
           git push origin HEAD
 
       - name: ✅ Set GitHub Status Check using PAT
