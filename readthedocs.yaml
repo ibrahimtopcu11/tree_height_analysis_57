@@ -9,11 +9,7 @@ python:
   install:
     - method: pip
       path: .
-    - requirements: docs/requirements-docs.txt
-
-sphinx:
-  configuration: docs/source/conf.py
-  fail_on_warning: false
+    - requirements: docs/requirements.txt
 
 build:
   commands:
