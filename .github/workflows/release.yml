@@ -32,8 +32,8 @@ jobs:
 
       - name: Configure Git identity
         run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
+          git config --global user.email "ibrahimtpc93@gmail.com"
+          git config --global user.name "ibrahimtopcu11"
 
       - name: Bump version (__init__.py only)
         id: bump
@@ -48,7 +48,8 @@ jobs:
         run: |
           git add .
           git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No version changes to commit"
-          git push origin HEAD
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:master
+          # Push işlemi artık github-actions botu değil, PAT kullanan senin hesabın tarafından yapılır
 
       - name: Build dist
         run: |
@@ -74,4 +75,4 @@ jobs:
         run: |
           git add -f dist/ docs/build/html/ docs/source/modules.rst
           git commit -m "ci: add built dist and updated docs for ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
-          git push origin HEAD
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:master
