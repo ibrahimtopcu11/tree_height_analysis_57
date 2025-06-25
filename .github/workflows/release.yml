@@ -11,6 +11,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.bump.outputs.new_version }}
 
     steps:
       - name: Checkout repository
@@ -27,8 +29,7 @@ jobs:
           pip install .
 
       - name: Run tests
-        run: |
-          pytest
+        run: pytest
 
       - name: Configure Git identity
         run: |
@@ -44,12 +45,6 @@ jobs:
           NEW=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
           echo "new_version=${NEW}" >> $GITHUB_OUTPUT
 
-      - name: Commit version bump
-        run: |
-          git add .
-          git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No version changes to commit"
-          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:master
-          
       - name: Build dist
         run: |
           rm -rf dist/
@@ -74,7 +69,6 @@ jobs:
         run: |
           git add -f dist/ docs/build/html/ docs/source/modules.rst
           git commit -m "ci: add built dist and updated docs for ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:master
 
   final-status:
     name: ✅ Final Status
@@ -82,4 +76,13 @@ jobs:
     needs: [release]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout again
+        uses: actions/checkout@v4
+
+      - name: Push all prepared changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:master
+
       - run: echo "All steps in 'release' job finished."
