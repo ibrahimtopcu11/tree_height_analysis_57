@@ -5,6 +5,9 @@ build:
   tools:
     python: "3.11"
 
+sphinx:
+  configuration: docs/source/conf.py
+
 python:
   install:
     - method: pip
@@ -12,7 +15,6 @@ python:
     - requirements: docs/requirements.txt
 
   pre_build:
-    - mkdir -p docs/source
     - sphinx-apidoc -o docs/source/ src/tree_height_analysis_57 --force --module-first
 
   build:
