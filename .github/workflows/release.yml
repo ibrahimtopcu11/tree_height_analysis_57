@@ -50,7 +50,6 @@ jobs:
           git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No version changes to commit"
           git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:master
           
-
       - name: Build dist
         run: |
           rm -rf dist/
@@ -76,3 +75,11 @@ jobs:
           git add -f dist/ docs/build/html/ docs/source/modules.rst
           git commit -m "ci: add built dist and updated docs for ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:master
+
+  final-status:
+    name: ✅ Final Status
+    if: always()
+    needs: [release]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "All steps in 'release' job finished."
