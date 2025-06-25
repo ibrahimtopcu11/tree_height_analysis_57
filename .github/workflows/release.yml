@@ -34,46 +34,37 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
 
-      - name: Bump version (init + bumpversion.cfg + pyproject.toml)
+      - name: Bump version (init + pyproject + cfg)
         id: bump
         run: |
-          CURRENT=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
-          echo "Current version: $CURRENT"
           bumpversion patch --allow-dirty
           NEW=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
           echo "new_version=${NEW}" >> $GITHUB_OUTPUT
-
-      - name: Commit version bump
-        run: |
-          git add pyproject.toml .bumpversion.cfg src/tree_height_analysis_57/__init__.py
-          git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No version changes to commit"
-          git push origin HEAD
 
       - name: Build dist
         run: |
           rm -rf dist/
           python -m build
 
-      - name: Publish to TestPyPI
+      - name: Check dist and upload to TestPyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
         run: |
-          set -e  # Hata varsa workflow'u durdur
+          set -e
           twine check dist/*
           twine upload --non-interactive --disable-progress-bar \
             --repository-url https://test.pypi.org/legacy/ dist/*
 
-      - name: Regenerate .rst files with sphinx-apidoc
+      - name: Regenerate docs
         run: |
           sphinx-apidoc -o docs/source/ src/tree_height_analysis_57 --force --module-first
-
-      - name: Build Sphinx HTML docs
-        run: |
           sphinx-build -b html docs/source docs/build/html
 
-      - name: Commit dist/ and updated docs
+      - name: Commit updated dist and docs
         run: |
           git add -f dist/ docs/build/html/ docs/source/modules.rst
-          git commit -m "ci: add built dist and updated docs for ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
+          git add pyproject.toml .bumpversion.cfg src/tree_height_analysis_57/__init__.py || echo "Nothing to add"
+          git commit -m "ci: version bump + dist + docs for ${{ steps.bump.outputs.new_version }}" || echo "Nothing to commit"
           git push origin HEAD
+
