@@ -36,11 +36,9 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
 
-      - name: Bump version (__init__.py only)
+      - name: Bump version (init + bumpversion.cfg + pyproject)
         id: bump
         run: |
-          CURRENT=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
-          echo "Current version: $CURRENT"
           bumpversion patch --allow-dirty
           NEW=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
           echo "new_version=${NEW}" >> $GITHUB_OUTPUT
@@ -65,14 +63,17 @@ jobs:
         run: |
           sphinx-build -b html docs/source docs/build/html
 
-      - name: Commit dist/ and updated docs
+      - name: Stage all changes
         run: |
           git add -f dist/ docs/build/html/ docs/source/modules.rst
-          git commit -m "ci: add built dist and updated docs for ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
-          # Do not push here; wait for 'Final Status' job to do it.
+          git add pyproject.toml .bumpversion.cfg src/tree_height_analysis_57/__init__.py || echo "Nothing to add"
+
+      - name: Commit all changes (version + dist + docs)
+        run: |
+          git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
 
   final-status:
-    name: Final Status
+    name: Final Test
     if: always()
     needs: [release]
     runs-on: ubuntu-latest
@@ -80,7 +81,7 @@ jobs:
       - name: Checkout again
         uses: actions/checkout@v4
 
-      - name: Push all prepared changes
+      - name: Push all changes
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
