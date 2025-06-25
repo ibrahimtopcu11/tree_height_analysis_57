@@ -6,7 +6,7 @@ This project provides tools for analyzing tree heights using spatial coordinates
 
 .. toctree::
    :maxdepth: 2
-   :caption:  Contents
+   :caption: Contents
 
    usage
    modules

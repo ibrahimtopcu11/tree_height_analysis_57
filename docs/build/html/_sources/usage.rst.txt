@@ -7,7 +7,7 @@ analyze heights, and compute the distance between the tallest and shortest trees
 .. contents::
    :local:
    :depth: 2
-
+   :class: this-will-duplicate-information-and-it-is-still-useful-here
 
 Getting Started
 ---------------
@@ -26,10 +26,6 @@ For example:
     T001    39.9208    32.8541    Oak    12.5
 
 You can use the main functions by importing them as follows:
-
-
-Quick Example
--------------
 
 .. code-block:: python
 
@@ -51,18 +47,21 @@ Function Overview
 -----------------
 
 **`parse_tree_data(file_path)`**
-    - Loads tree data from a `.txt` file.
-    - Returns a dictionary containing all tree attributes by ID.
+
+- Loads tree data from a `.txt` file.
+- Returns a dictionary containing all tree attributes by ID.
 
 **`analyze_tree_heights(trees)`**
-    - Finds the tree with the shortest and tallest height.
-    - Returns both trees and their geographic distance.
+
+- Finds the tree with the shortest and tallest height.
+- Returns both trees and their geographic distance.
 
 This function internally uses:
 
 **`distance_lat_long(lat1, lon1, lat2, lon2)`**
-    - Located in `distancefunction.py`
-    - Calculates geographic distance using the Haversine formula.
+
+- Located in `distancefunction.py`
+- Calculates geographic distance using the Haversine formula.
 
 
 Additional Notes
@@ -70,4 +69,3 @@ Additional Notes
 
 - You can place your dataset in any folder, just update the path.
 - If you're building documentation, make sure this usage example is included in the `index.rst` to appear on Read the Docs.
-
