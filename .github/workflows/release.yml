@@ -27,8 +27,7 @@ jobs:
           pip install .
 
       - name: Run tests
-        run: |
-          pytest
+        run: pytest
 
       - name: Configure Git identity
         run: |
@@ -56,11 +55,14 @@ jobs:
           python -m build
 
       - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.TEST_PYPI_TOKEN }}
-          repository-url: https://test.pypi.org/legacy/
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+        run: |
+          set -e  # Eğer bir hata olursa tüm job'u durdur
+          twine check dist/*
+          twine upload --non-interactive --disable-progress-bar \
+            --repository-url https://test.pypi.org/legacy/ dist/*
 
       - name: Regenerate .rst files with sphinx-apidoc
         run: |
