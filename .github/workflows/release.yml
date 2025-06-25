@@ -24,10 +24,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade build twine sphinx furo sphinx-autodoc-typehints bumpversion pytest
+          pip install .
 
       - name: Run tests
         run: |
-          pip install -e .[docs]
           pytest
 
       - name: Configure Git identity
@@ -42,17 +42,12 @@ jobs:
           echo "Current version: $CURRENT"
           bumpversion patch --allow-dirty
           NEW=$(python -c "import re; f=open('src/tree_height_analysis_57/__init__.py').read(); print(re.search(r'__version__ = \"(.*?)\"', f).group(1))")
-          echo "New version: $NEW"
           echo "new_version=${NEW}" >> $GITHUB_OUTPUT
 
-      - name: Regenerate API Docs (.rst files)
+      - name: Commit version bump
         run: |
-          sphinx-apidoc -o docs/source/ src/tree_height_analysis_57 --force --module-first
-
-      - name: Commit regenerated docs
-        run: |
-          git add docs/source/*.rst
-          git commit -m "ci: regenerate API docs for ${{ steps.bump.outputs.new_version }}" || echo "No .rst changes to commit"
+          git add .
+          git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No version changes to commit"
           git push origin HEAD
 
       - name: Build dist
@@ -67,14 +62,18 @@ jobs:
           password: ${{ secrets.TEST_PYPI_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
 
+      - name: Regenerate .rst files with sphinx-apidoc
+        run: |
+          sphinx-apidoc -o docs/source/ src/tree_height_analysis_57 --force --module-first
+
       - name: Build Sphinx HTML docs
         run: |
           sphinx-build -b html docs/source docs/build/html
 
-      - name: Commit dist/ and HTML docs
+      - name: Commit dist/ and updated docs
         run: |
-          git add -f dist/ docs/build/html/
-          git commit -m "ci: add built dist and docs for ${{ steps.bump.outputs.new_version }}" || echo "No built files to commit"
+          git add -f dist/ docs/build/html/ docs/source/modules.rst
+          git commit -m "ci: add built dist and updated docs for ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
           git push origin HEAD
 
       - name: ✅ Set GitHub Status Check using PAT

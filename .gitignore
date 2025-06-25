@@ -22,8 +22,8 @@ htmlcov/
 # mypy
 .mypy_cache/
 
-# Sphinx (dist ve build hariç)
-docs/_build/
+# Sphinx 
+docs/_build/html/
 
 # Environments
 .venv/
