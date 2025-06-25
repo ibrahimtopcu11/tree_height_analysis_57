@@ -11,8 +11,6 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.bump.outputs.new_version }}
 
     steps:
       - name: Checkout repository
@@ -63,28 +61,9 @@ jobs:
         run: |
           sphinx-build -b html docs/source docs/build/html
 
-      - name: Stage all changes
+      - name: Commit and push all changes
         run: |
-          git add -f dist/ docs/build/html/ docs/source/modules.rst
-          git add pyproject.toml .bumpversion.cfg src/tree_height_analysis_57/__init__.py || echo "Nothing to add"
-
-      - name: Commit all changes (version + dist + docs)
-        run: |
+          git add pyproject.toml .bumpversion.cfg src/tree_height_analysis_57/__init__.py
+          git add -f dist/ docs/build/html/ docs/source/modules.rst || echo "Nothing to add"
           git commit -m "ci: bump version to ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
-
-  final-status:
-    name: Final Test
-    if: always()
-    needs: [release]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout again
-        uses: actions/checkout@v4
-
-      - name: Push all changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
           git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:master
-
-      - run: echo "All steps in 'release' job finished."
