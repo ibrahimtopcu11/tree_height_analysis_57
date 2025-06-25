@@ -33,8 +33,8 @@ jobs:
 
       - name: Configure Git identity
         run: |
-          git config --global user.email "ibrahimtopcu193@gmail.com"
-          git config --global user.name "ibrahimtopcu11"
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
 
       - name: Bump version (__init__.py only)
         id: bump
@@ -69,9 +69,10 @@ jobs:
         run: |
           git add -f dist/ docs/build/html/ docs/source/modules.rst
           git commit -m "ci: add built dist and updated docs for ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
+          # Do not push here; wait for 'Final Status' job to do it.
 
   final-status:
-    name: ✅ Final Status
+    name: Final Status
     if: always()
     needs: [release]
     runs-on: ubuntu-latest
