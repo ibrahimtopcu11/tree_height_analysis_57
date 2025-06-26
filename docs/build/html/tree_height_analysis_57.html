@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="tree_height_analysis_57" href="modules.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>tree_height_analysis_57 package - Tree Height Analysis 0.1.78 documentation</title>
+        <title>tree_height_analysis_57 package - Tree Height Analysis 0.1.79 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Tree Height Analysis 0.1.78 documentation</div></a>
+      <a href="index.html"><div class="brand">Tree Height Analysis 0.1.79 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">Tree Height Analysis 0.1.78 documentation</span>
+  <span class="sidebar-brand-text">Tree Height Analysis 0.1.79 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -300,6 +300,30 @@ along with their types, coordinates, and the distance between them.</p>
 </p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tree_height_analysis_57.analyzer.group_trees_by_type">
+<span class="sig-prename descclassname"><span class="pre">tree_height_analysis_57.analyzer.</span></span><span class="sig-name descname"><span class="pre">group_trees_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trees</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tree_height_analysis_57.analyzer.group_trees_by_type" title="Link to this definition">¶</a></dt>
+<dd><p>Group trees by their type and count how many of each type exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>trees</strong> (<em>dict</em>) – A dictionary of tree entries where each value contains a ‘type’ field.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>dict</em> – A dictionary where keys are tree types and values are the count of each type.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trees</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;T001&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Oak&quot;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="s2">&quot;T002&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Pine&quot;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="s2">&quot;T003&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Oak&quot;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">group_trees_by_type</span><span class="p">(</span><span class="n">trees</span><span class="p">)</span>
+<span class="go">{&#39;Oak&#39;: 2, &#39;Pine&#39;: 1}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -467,6 +491,7 @@ the Haversine formula.</p>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-tree_height_analysis_57.analyzer">tree_height_analysis_57.analyzer module</a><ul>
 <li><a class="reference internal" href="#tree_height_analysis_57.analyzer.analyze_tree_heights"><code class="docutils literal notranslate"><span class="pre">analyze_tree_heights()</span></code></a></li>
+<li><a class="reference internal" href="#tree_height_analysis_57.analyzer.group_trees_by_type"><code class="docutils literal notranslate"><span class="pre">group_trees_by_type()</span></code></a></li>
 <li><a class="reference internal" href="#tree_height_analysis_57.analyzer.parse_tree_data"><code class="docutils literal notranslate"><span class="pre">parse_tree_data()</span></code></a></li>
 </ul>
 </li>
@@ -490,7 +515,7 @@ the Haversine formula.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=18b80ae6"></script>
+</div><script src="_static/documentation_options.js?v=bcc08eff"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
