@@ -104,3 +104,27 @@ def analyze_tree_heights(trees):
         )
     }
     return result
+def group_trees_by_type(trees):
+    """
+    Group trees by their type and count how many of each type exist.
+
+    Parameters:
+        trees (dict): A dictionary of tree entries where each value contains a 'type' field.
+
+    Returns:
+        dict: A dictionary where keys are tree types and values are the count of each type.
+
+    Example:
+        >>> trees = {
+        ...     "T001": {"type": "Oak"},
+        ...     "T002": {"type": "Pine"},
+        ...     "T003": {"type": "Oak"}
+        ... }
+        >>> group_trees_by_type(trees)
+        {'Oak': 2, 'Pine': 1}
+    """
+    counts = {}
+    for tree in trees.values():
+        tree_type = tree.get("type", "Unknown")
+        counts[tree_type] = counts.get(tree_type, 0) + 1
+    return counts
