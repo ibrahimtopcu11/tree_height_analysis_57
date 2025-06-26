@@ -9,7 +9,7 @@ This project provides tools for analyzing tree heights using spatial coordinates
    :caption: Contents
 
    usage
-   modules
+   api
 
 Indices and tables
 ==================

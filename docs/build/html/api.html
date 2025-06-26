@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="api.html" /><link rel="prev" title="Tree Height Analysis Documentation" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Usage" href="usage.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Usage - Tree Height Analysis 0.1.77 documentation</title>
+        <title>API Reference - Tree Height Analysis 0.1.77 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -200,8 +200,8 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">API Reference</a></li>
 </ul>
 
 </div>
@@ -222,7 +222,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="_sources/usage.rst.txt" title="View this page">
+  <a class="muted-link" href="_sources/api.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -236,85 +236,16 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h1>
-<p>This guide shows how to use the <code class="docutils literal notranslate"><span class="pre">tree_height_analysis_57</span></code> package to load tree data,
-analyze heights, and compute the distance between the tallest and shortest trees.</p>
-<nav class="contents this-will-duplicate-information-and-it-is-still-useful-here local" id="contents">
-<ul class="simple">
-<li><p><a class="reference internal" href="#getting-started" id="id1">Getting Started</a></p></li>
-<li><p><a class="reference internal" href="#function-overview" id="id2">Function Overview</a></p></li>
-<li><p><a class="reference internal" href="#additional-notes" id="id3">Additional Notes</a></p></li>
-</ul>
-</nav>
-<section id="getting-started">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">Getting Started</a><a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
-<p>To begin using the package, make sure your dataset is a tab-separated <cite>.txt</cite> file
-with the following columns:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span>    <span class="n">latitude</span>    <span class="n">longitude</span>    <span class="nb">type</span>    <span class="n">height</span>
-</pre></div>
-</div>
-<p>For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T001</span>    <span class="mf">39.9208</span>    <span class="mf">32.8541</span>    <span class="n">Oak</span>    <span class="mf">12.5</span>
-</pre></div>
-</div>
-<p>You can use the main functions by importing them as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tree_height_analysis_57.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_tree_data</span><span class="p">,</span> <span class="n">analyze_tree_heights</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">tree_height_analysis_57.average_tree_height</span><span class="w"> </span><span class="kn">import</span> <span class="n">average_tree_height</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">tree_height_analysis_57.average_tree_height</span><span class="w"> </span><span class="kn">import</span> <span class="n">filter_tall_trees</span>
-
-<span class="n">trees</span> <span class="o">=</span> <span class="n">parse_tree_data</span><span class="p">(</span><span class="s2">&quot;sample_dataset/trees_complex.txt&quot;</span><span class="p">)</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">analyze_tree_heights</span><span class="p">(</span><span class="n">trees</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Minimum Height Tree:&quot;</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Maximum Height Tree:&quot;</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Distance Between Min and Max (km):&quot;</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;distance&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Average Height:&quot;</span><span class="p">,</span> <span class="n">average_tree_height</span><span class="p">(</span><span class="n">trees</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tall Trees:&quot;</span><span class="p">,</span> <span class="n">filter_tall_trees</span><span class="p">(</span><span class="n">trees</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
-</pre></div>
-</div>
-</section>
-<section id="function-overview">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Function Overview</a><a class="headerlink" href="#function-overview" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt><strong>`parse_tree_data(file_path)`</strong></dt><dd><ul class="simple">
-<li><p>Loads tree data from a <cite>.txt</cite> file.</p></li>
-<li><p>Returns a dictionary containing all tree attributes by ID.</p></li>
-</ul>
-</dd>
-<dt><strong>`analyze_tree_heights(trees)`</strong></dt><dd><ul class="simple">
-<li><p>Finds the tree with the shortest and tallest height.</p></li>
-<li><p>Returns both trees and their geographic distance.</p></li>
-</ul>
-</dd>
-<dt><strong>`distance_lat_long(lat1, lon1, lat2, lon2)`</strong></dt><dd><ul class="simple">
-<li><p>Located in <cite>distancefunction.py</cite></p></li>
-<li><p>Calculates geographic distance using the Haversine formula.</p></li>
-</ul>
-</dd>
-<dt><strong>`average_tree_height(trees)`</strong></dt><dd><ul class="simple">
-<li><p>Calculates the average height of trees in the dataset.</p></li>
-</ul>
-</dd>
-<dt><strong>`filter_tall_trees(trees, min_height)`</strong></dt><dd><ul class="simple">
-<li><p>Returns only the trees that are taller than the given minimum height.</p></li>
-</ul>
-</dd>
-</dl>
-</section>
-<section id="additional-notes">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink">Additional Notes</a><a class="headerlink" href="#additional-notes" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>You can place your dataset in any folder, just update the path.</p></li>
-<li><p>If you’re building documentation, make sure this usage example is included in the <cite>index.rst</cite> to appear on Read the Docs.</p></li>
-</ul>
-</section>
+          <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h1>
+<p>This section contains the complete API reference for the <cite>tree_height_analysis_57</cite> package.
+All modules and public functions are documented automatically.</p>
 </section>
 
         </article>
@@ -322,23 +253,15 @@ with the following columns:</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="api.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">API Reference</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="index.html">
+          
+          <a class="prev-page" href="usage.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Home</div>
+                <div class="title">Usage</div>
                 
               </div>
             </a>
@@ -360,29 +283,8 @@ with the following columns:</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Usage</a><ul>
-<li><a class="reference internal" href="#getting-started">Getting Started</a></li>
-<li><a class="reference internal" href="#function-overview">Function Overview</a></li>
-<li><a class="reference internal" href="#additional-notes">Additional Notes</a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>
