@@ -30,38 +30,39 @@ You can use the main functions by importing them as follows:
 .. code-block:: python
 
     from tree_height_analysis_57.analyzer import parse_tree_data, analyze_tree_heights
+    from tree_height_analysis_57.average_tree_height import average_tree_height
+    from tree_height_analysis_57.average_tree_height import filter_tall_trees
 
-    # Load data from your text file
     trees = parse_tree_data("sample_dataset/trees_complex.txt")
-
-    # Analyze tree height data
     results = analyze_tree_heights(trees)
 
-    # Print results
     print("Minimum Height Tree:", results["min"])
     print("Maximum Height Tree:", results["max"])
     print("Distance Between Min and Max (km):", results["distance"])
+    print("Average Height:", average_tree_height(trees))
+    print("Tall Trees:", filter_tall_trees(trees, 10.0))
 
 
 Function Overview
 -----------------
 
 **`parse_tree_data(file_path)`**
-
-- Loads tree data from a `.txt` file.
-- Returns a dictionary containing all tree attributes by ID.
+    - Loads tree data from a `.txt` file.
+    - Returns a dictionary containing all tree attributes by ID.
 
 **`analyze_tree_heights(trees)`**
-
-- Finds the tree with the shortest and tallest height.
-- Returns both trees and their geographic distance.
-
-This function internally uses:
+    - Finds the tree with the shortest and tallest height.
+    - Returns both trees and their geographic distance.
 
 **`distance_lat_long(lat1, lon1, lat2, lon2)`**
+    - Located in `distancefunction.py`
+    - Calculates geographic distance using the Haversine formula.
 
-- Located in `distancefunction.py`
-- Calculates geographic distance using the Haversine formula.
+**`average_tree_height(trees)`**
+    - Calculates the average height of trees in the dataset.
+
+**`filter_tall_trees(trees, min_height)`**
+    - Returns only the trees that are taller than the given minimum height.
 
 
 Additional Notes
