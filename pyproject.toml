@@ -10,13 +10,18 @@ authors = [{ name = "İbrahim Topcu", email = "ibrahimtpc93@gmail.com" }]
 license = "MIT"
 requires-python = ">=3.8"
 dynamic = ["version"]
-dependencies = ["pytest"]
+dependencies = [
+    "pandas",
+    "pytest"
+]
 
 [project.optional-dependencies]
 docs = [
   "sphinx>=7.0",
   "furo",
-  "sphinx-autodoc-typehints"
+  "sphinx-autodoc-typehints",
+  "sphinx-autobuild",
+  "sphinxcontrib-napoleon"
 ]
 
 [project.urls]
